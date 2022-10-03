@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('ctrl_action');
             $table->enum('type', ['auth', 'guest']);
             $table->string('guard_name'); 
+            $table->string('description'); 
             $table->timestamps();
             $table->unique(['name', 'guard_name']);
         });

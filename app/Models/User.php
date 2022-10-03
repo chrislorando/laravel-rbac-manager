@@ -41,4 +41,48 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    public function hasPermission($permission) 
+    {
+        // return $this::with([
+        //     'roles' => function($query) use ($permission) {
+        //         $query->select('id');
+        //         $query->with(['permissions' => function($query) use ($permission) {
+        //             $query->select('id');
+        //             $query->where('name',$permission);
+        //         }]);
+        // }])->first() ?: false;
+
+        return $this::with([
+            'role' => function($query) use ($permission) {
+                $query->select('id','name');
+                $query->with(['permissions' => function($query) use ($permission) {
+                    $query->select('id','name');
+                    $query->where('name',$permission);
+                }]);
+        }])->first() ?: false;
+    }
+    
+    public function teams()
+    {
+        // return $this->belongsToMany(Permission::class, 'role_permissions')
+        //     ->using(Role::class)
+        //     ->as('role')
+        //     ->withPivot('role');
+
+        return $this->hasManyThrough(
+            PermissionRole::class,
+            RoleUser::class,
+            'role_id', // Foreign key on the environments table...
+            'user_id', // Foreign key on the deployments table...
+            'id', // Local key on the projects table...
+            'id' // Local key on the environments table...
+        );
+    }
 }
