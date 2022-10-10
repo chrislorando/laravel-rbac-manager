@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id'); 
             $table->string('name');
             $table->string('url');
-            $table->string('route');
+            // $table->string('route');
             $table->string('params');
             $table->string('method');
             $table->string('ctrl_path');

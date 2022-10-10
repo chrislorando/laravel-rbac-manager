@@ -19,4 +19,14 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    $models = DB::table('permissions')->get();
+    foreach ($models as $row) {
+        $params = $row->params ? '/'.$row->params : '';
+        if($row->name){
+            Route::{$row->method}($row->url.$params, $row->ctrl_path.'@'.$row->ctrl_action)->name($row->name)->middleware('can:'.$row->name);
+        }
+    }
+});

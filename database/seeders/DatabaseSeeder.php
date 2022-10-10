@@ -16,45 +16,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        if ($this->command->confirm('Do you wish to refresh migration before seeding, it will clear all old data ?')) {
+        if ($this->command->confirm('Refresh migration, continue?')) {
             $this->command->call('migrate:refresh');
-            $this->command->warn("Data cleared, starting from blank database.");
+            $this->command->warn("Refresh migration done.");
         }
 
-        $role1 = Role::firstOrCreate(['name' => 'SUPERUSER', 'description' => 'Super User Role', 'guard_name' => 'web']);
-        $role2 = Role::firstOrCreate(['name' => 'SUPERUSER2', 'description' => 'Super User Role2', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'SUPERUSER', 'description' => 'Super User Role', 'guard_name' => 'web']);
         
-        $user1 = User::factory()->create([
+        $user = User::factory()->create([
             'name' => 'Administrator',
             'email' => 'admin@example.com',
         ]);
 
-        $user2 = User::factory()->create([
-            'name' => 'Demo',
-            'email' => 'demo@example.com',
-        ]);
-
         $this->generatePermissions();
 
-        $role1->permissions()->sync(Permission::all());
-        $role2->permissions()->sync(Permission::all());
-        $user1->roles()->sync(Role::all());
-        $user2->roles()->sync(Role::all());
+        $role->permissions()->sync(Permission::all());
+        $user->roles()->sync(Role::all());
 
         $this->command->warn('This is your initial account, you can change it later.');
 
         $this->command->info('Role'. ':' .'SUPERUSER');
         $this->command->info('Email'. ':' .'admin@example.com');
         $this->command->info('Password'. ':' .'password');
-
-      
-        // $users = User::with(['roles' => function($query){
-        //     $query->with('permissions')->where('ctrl_name','Permission');
-        // }])->first();
-        // $users = $user1::with('teams')->first();
-
-        // $roles = Role::with('userRolePermissions')->get();
-        // $this->command->info(json_encode($users));
     }
 
     public function generatePermissions($folder=false)
@@ -75,9 +58,8 @@ class DatabaseSeeder extends Seeder
             
             if(!$existsGroup){                    
                 Permission::create([
-                    'name' => $permissionGroup,
-                    'url' => '',
-                    'route'=> $folder ? $groupRoute.'.*' : '*',
+                    'name' => $folder ? $groupRoute.'.*' : '*',
+                    'url' => $permissionGroup,
                     'params'=> '',
                     'method'=> 'get',
                     'ctrl_path'=> '',
@@ -89,7 +71,6 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-        
     
         $ctrl = [];
         foreach (glob(app_path().$directory.'/*') as $key=>$controller) {
@@ -143,9 +124,8 @@ class DatabaseSeeder extends Seeder
             // Insert default module permissions
             if(!$existsC){                    
                 Permission::create([
-                    'name' => $permissionC,
-                    'url' => '',
-                    'route'=> $folder ? $route.'.*' : $route,
+                    'name' => $folder ? $route.'.*' : $route,
+                    'url' => $permissionC,
                     'params'=> '',
                     'method'=> 'get',
                     'ctrl_path'=> $classes,
@@ -214,9 +194,8 @@ class DatabaseSeeder extends Seeder
                         $this->command->info($cName.' - '.$r);
 
                         Permission::create([
-                            'name' => $permission,
-                            'url' => '',
-                            'route'=> $alias,
+                            'name' => $alias,
+                            'url' => $permission,
                             'params'=> $params,
                             'method'=>  $method,
                             'ctrl_path'=> $classes,
@@ -227,11 +206,8 @@ class DatabaseSeeder extends Seeder
                             'description' => $description
                         ]);
                     }
-
                 }
-                
             }  
         }
-
     }
 }
