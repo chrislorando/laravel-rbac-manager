@@ -65,6 +65,7 @@ class DatabaseSeeder extends Seeder
                     'ctrl_path'=> '',
                     'ctrl_name'=> '',
                     'ctrl_action'=> '',
+                    'render_view'=> 'welcome',
                     'type'=>'auth',
                     'guard_name'=>'web',
                     'description' => 'Module Group',

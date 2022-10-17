@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('ctrl_path');
             $table->string('ctrl_name');
             $table->string('ctrl_action');
+            $table->string('render_view')->nullable();
             $table->enum('type', ['auth', 'guest']);
             $table->string('guard_name'); 
             $table->string('description'); 
