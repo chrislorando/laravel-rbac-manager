@@ -19,9 +19,9 @@ return new class extends Migration
             $table->tinyInteger('sort')->default(1);
             $table->string('name');
             $table->string('url');
-            $table->string('route');
-            $table->enum('position', ['topbar', 'sidebar'])->default('1');
-            $table->enum('status', ['active', 'inactive'])->default('1');
+            $table->string('route')->nullable();
+            $table->enum('position', ['topbar', 'sidebar'])->default('topbar');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('description')->nullable();
             $table->timestamps();
 
@@ -40,6 +40,8 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('menus');
+        Schema::enableForeignKeyConstraints();
     }
 };

@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Menu;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -38,6 +40,49 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Role'. ':' .'SUPERUSER');
         $this->command->info('Email'. ':' .'admin@example.com');
         $this->command->info('Password'. ':' .'password');
+
+
+        $this->command->warn("Generating default menu...");
+
+        $links = [
+            [
+                'sort' => 1,
+                'parent_id' => null,
+                'name' => 'Home',
+                'url' => '/home',
+                'route' => 'home.index',
+            ],
+            [
+                'sort' => 3,
+                'parent_id' => null,
+                'name' => 'Permission',
+                'url' => '/permission',
+                'route' => 'permission.index',
+            ],
+            [
+                'sort' => 4,
+                'parent_id' => null,
+                'name' => 'Role',
+                'url' => '/role',
+                'route' => 'role.index',
+            ],
+            [
+                'sort' => 5,
+                'parent_id' => null,
+                'name' => 'Menu',
+                'url' => '/menu',
+                'route' => 'menu.index',
+            ],
+            [
+                'sort' => 6,
+                'parent_id' => null,
+                'name' => 'User',
+                'url' => '/user',
+                'route' => 'user.index',
+            ],
+        ];
+  
+        Menu::insert($links);
     }
 
     public function generatePermissions($folder=false)
